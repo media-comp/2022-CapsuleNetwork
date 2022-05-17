@@ -93,7 +93,7 @@ python overlay_visualize.py
 
 ### Accuracy on Test Set
 
-|My Accuracy|Reported Accuracy|
+|Accuracy|Reported Accuracy|
 |--|--|
 |99.22%|99.75%|
 
