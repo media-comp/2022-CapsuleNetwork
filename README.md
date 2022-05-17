@@ -53,7 +53,7 @@ You can also use different choices of hyper-parameters and options. The default 
   --gpu GPU             ids of the GPUs to run the program on, use : to indicate the slice, 0 by default
 ```
 
-## Visualize the Reconstruction Results of Tweaking Values in Capsule Vectors
+## Visualize the Reconstruction of Tweaking Values in Capsule Vectors
 
 Use options `--digit` and `--dimension` to specify which dimension of which digit vector you want to see the effect of on the reconstructed image.
 
@@ -74,7 +74,7 @@ python tweak_visualize.py --digit <digit> --dimension <dimension>
                         the upper difference bound for the target value, 0.25 by default
 ```
 
-## Visualize the Reconstruction Results of Overlaying Two Images of Different Digits
+## Visualize the Reconstruction of Overlaying Two Images of Different Digits
 
 The digits and images are randomly chosen.
 
