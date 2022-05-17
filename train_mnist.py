@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from capsnet import MNISTCapsNet
+from capsule import MNISTCapsNet
 
 IMAGE_SIZE = (28, 28, 1)
 
