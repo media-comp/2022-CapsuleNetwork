@@ -1,0 +1,27 @@
+name: test train_mnist.py
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: set up python 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+          cache: 'pip'
+          
+      - name: install dependencies
+        run: |
+          pip install -r requirements.txt
+          python train_mnist.py --epochs 0
