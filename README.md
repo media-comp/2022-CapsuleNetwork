@@ -55,7 +55,7 @@ You can also use different choices of hyper-parameters and options. The default 
 
 ## Visualize the Reconstruction Results of Tweaking Values in Capsule Vectors
 
-Use options --digit and --dimension to specify which dimension of which digit vector you want to see the effect of on the reconstructed image.
+Use options `--digit` and `--dimension` to specify which dimension of which digit vector you want to see the effect of on the reconstructed image.
 
 ```shell
 python tweak_visualize.py --digit <digit> --dimension <dimension>
