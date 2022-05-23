@@ -26,6 +26,7 @@ The requirements are specified as below.
  - tensorflow==2.8.0
  - tensorflow-datasets==4.5.2
  - matplotlib==3.5.2
+ - flask==2.0.3
 
 ## Train the Model
 
@@ -74,7 +75,7 @@ python tweak_visualize.py --digit <digit> --dimension <dimension>
                         the upper difference bound for the target value, 0.25 by default
 ```
 
-You can also visualize the reconstruction through `capsule_net_ui`. Move to the `capsule_net_ui` folder and run the following command. Open the prompt url in your browser.
+You can also visualize the reconstruction through `capsule_net_ui`. Move to the `capsule_net_ui` folder and run the following command. Then open the prompt url in your browser.
 
 ```
 python app.py
