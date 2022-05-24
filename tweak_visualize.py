@@ -10,6 +10,7 @@ parser.add_argument('--digit', type=int, default=6, help='the target digit to vi
 parser.add_argument('--dimension', type=int, default=5, help='the target dimension of the digit to visualize on, 5 by default')
 parser.add_argument('--lower-difference', type=float, default=-0.25, help='the lower difference bound for the target value, -0.25 by default')
 parser.add_argument('--upper-difference', type=float, default=0.25, help='the upper difference bound for the target value, 0.25 by default')
+parser.add_argument('--difference', type=float, default=0, help='the difference between the desired value and the original value')
 args = parser.parse_args()
 
 digit = args.digit
@@ -52,17 +53,49 @@ def find_visuals(dataset: tf.data.Dataset, model: tf.keras.Model):
     return visuals, original_value+lower, original_value+upper
 
 
+def single_visual(dataset: tf.data.Dataset, model: tf.keras.Model):
+    img_norm = normalize()
+    orig_img, recons_img = None, None
+
+    for x, y in dataset.shuffle(1024).batch(1):
+        if y.numpy()[0] == digit:
+            class_vector = (model(img_norm(x))[0]).numpy()[0]
+            if np.argmax(np.linalg.norm(class_vector, axis=-1)) == digit:
+                orig_img = x.numpy()[0][..., 0]
+                tweaked_vector = class_vector.copy()
+                tweaked_vector[digit, dim] = class_vector[digit, dim] + args.difference
+                recons_img = model.reconstruct(np.expand_dims(tweaked_vector, 0)).numpy()[0][..., 0]
+
+    return orig_img, recons_img
+
+
 if __name__ == '__main__':
     model = tf.keras.models.load_model(args.model_path)
     _, test_set = tfds.load('mnist', split=['train', 'test'], shuffle_files=True, as_supervised=True)
 
-    visuals, lower, upper = find_visuals(test_set, model)
+    if args.lower_difference < args.upper_difference:
+        visuals, lower, upper = find_visuals(test_set, model)
 
-    fig, axes = plt.subplots(1, 12, figsize=(12, 4))
-    for v, ax in zip(visuals, axes):
-        ax.imshow(v, cmap='gray')
-        ax.axis('off')
-    axes[0].set_title('Original')
-    axes[1].set_title(f'{lower:.2f}')
-    axes[-1].set_title(f'{upper:.2f}')
-    fig.show()
+        fig, axes = plt.subplots(1, 12, figsize=(12, 4))
+        for v, ax in zip(visuals, axes):
+            ax.imshow(v, cmap='gray')
+            ax.axis('off')
+        axes[0].set_title('Original')
+        axes[1].set_title(f'{lower:.2f}')
+        axes[-1].set_title(f'{upper:.2f}')
+        fig.show()
+
+    if args.difference != 0:
+        orig_img, recons_img = single_visual(test_set, model)
+
+        fig, axes = plt.subplots(1, 2)
+
+        axes[0].imshow(orig_img, cmap='gray')
+        axes[0].axis('off')
+        axes[0].set_title('Original')
+
+        axes[1].imshow(recons_img, cmap='gray')
+        axes[1].axis('off')
+        axes[1].set_title('Tweaked')
+
+        fig.show()
