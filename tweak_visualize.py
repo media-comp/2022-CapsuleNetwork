@@ -10,6 +10,7 @@ parser.add_argument('--digit', type=int, default=6, help='the target digit to vi
 parser.add_argument('--dimension', type=int, default=5, help='the target dimension of the digit to visualize on, 5 by default')
 parser.add_argument('--lower-difference', type=float, default=-0.25, help='the lower difference bound for the target value, -0.25 by default')
 parser.add_argument('--upper-difference', type=float, default=0.25, help='the upper difference bound for the target value, 0.25 by default')
+parser.add_argument('--interval', type=int, default=10, help='the interval of different tweaked value')
 parser.add_argument('--difference', type=float, default=0, help='the difference between the desired value and the original value')
 args = parser.parse_args()
 
@@ -43,8 +44,9 @@ def find_visuals(dataset: tf.data.Dataset, model: tf.keras.Model):
                 original_value = class_vector[digit, dim]
                 lower = args.lower_difference
                 upper = args.upper_difference
-                intervals = (upper - lower) / 10
-                for i in range(11):
+                interval = args.interval
+                intervals = (upper - lower) / interval
+                for i in range(interval+1):
                     tweaked_vector = class_vector.copy()
                     tweaked_vector[digit, dim] = original_value+lower+intervals*i
                     visuals.append(model.reconstruct(np.expand_dims(tweaked_vector, 0)).numpy()[0][..., 0])
@@ -76,7 +78,7 @@ if __name__ == '__main__':
     if args.lower_difference < args.upper_difference:
         visuals, lower, upper = find_visuals(test_set, model)
 
-        fig, axes = plt.subplots(1, 12, figsize=(12, 4))
+        fig, axes = plt.subplots(1, args.interval+2, figsize=(12, 4))
         for v, ax in zip(visuals, axes):
             ax.imshow(v, cmap='gray')
             ax.axis('off')
