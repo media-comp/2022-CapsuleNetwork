@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from tweak import pred_save_image
+from tweak import find_visuals
 import tensorflow as tf
 
 # Load inference model
@@ -17,19 +17,19 @@ def predict():
         up_bound = float(request.form["ub"])
         digit = int(request.form["digit"])
         dim = int(request.form["dim"])
-
+        intervals = int(request.form["intervals"])
         if low_bound >= up_bound:
             message = "The upper bound should be larger than the lower bound."
             return render_template("index.html", message=message)
 
         # save images to `static` folder and return values for displaying.
-        lower, upper = pred_save_image(model, digit, dim, low_bound, up_bound)
+        lower, upper, interval = find_visuals(model, digit, dim, low_bound, up_bound, intervals)
         # generate `title_list` will display value when the mouse hover the image
-        interval = (upper - lower) / 10
-        title_list = [round(lower + interval * i, 2) for i in range(11)]
-        title_list = list(map(lambda x: str(x), title_list))
+        # interval = (upper - lower) / 10
+        # value_list = [round(lower + interval * i, 2) for i in range(11)]
+        # value_list = list(map(lambda x: str(x), value_list))
 
-        return render_template("index.html", generated=True, title_list=title_list)
+        return render_template("index.html", generated=True, lb=lower, ub=upper, interval=interval)
     return render_template("index.html", generted=False)
 
 

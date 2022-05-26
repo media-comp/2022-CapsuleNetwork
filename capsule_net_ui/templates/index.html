@@ -25,12 +25,16 @@
   <div class="container" width="90%">
     <form action="{{url_for('predict')}}" method="POST">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
           <input type="number" style="width:65%;" class="form-control" placeholder="Lower bound" name="lb" step="0.01"
             required>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
           <input type="number" style="width:65%;" class="form-control" placeholder="Upper bound" name="ub" step="0.01"
+            required>
+        </div>
+        <div class="col-md-4">
+          <input type="number" style="width:65%;" class="form-control" placeholder="Intervals" name="intervals" step="0.01"
             required>
         </div>
       </div>
@@ -54,14 +58,42 @@
 
   {% if message %}
   <div class="alert alert-primary" role="alert">
-    {{ message }}
+  {{ message }}
   </div>
   {% endif %}
-
   <br>
-
-
   {% if generated %}
+  <input onchange='setImage(this)' type="range" min={{lb}} max={{ub}} value={{lb}} step={{interval}} style="width:40%" />
+<br>
+
+<!-- <meta id="my-data" data-lb={{lb}} data-interval="{{interval}}"> -->
+
+  <div class="col-md-4">
+    <img id='img' src='static/img0.png' />
+  </div>
+
+  <script>
+  var img = document.getElementById('img');
+  // var img_array = ['static/img0.png', 'static/img1.png'];
+  
+  function setImage(obj)
+  {
+    let lb = {{ lb | safe }}
+    let interval = {{ interval | safe }}
+    let value = Number(((obj.value - lb) / interval));
+    val_str = value.toString();
+    let s1 = 'static/img';
+    let s2 = s1.concat(val_str, ".png");
+    img.src = s2;
+  }
+  </script>
+
+
+
+  {% endif %}
+
+
+  <!-- {% if generated %}
   <div class="row">
 
     <div class="col-md-1 offset-md-2 col-lg-1 offset-lg-2 thumb">
@@ -74,26 +106,7 @@
         <img class="rounded img-responsive" src="static/img1.png" width="90%" height="90%" title={{title_list[0]}}>
       </a>
     </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img2.png" width="90%" height="90%" title={{title_list[1]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img3.png" width="90%" height="90%" title={{title_list[2]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img4.png" width="90%" height="90%" title={{title_list[3]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img5.png" width="90%" height="90%" title={{title_list[4]}}>
-      </a>
-    </div>
+ 
   </div>
 
   <br>
@@ -110,28 +123,9 @@
         <img class="rounded img-responsive" src="static/img7.png" width="90%" height="90%" title={{title_list[6]}}>
       </a>
     </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img8.png" width="90%" height="90%" title={{title_list[7]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img9.png" width="90%" height="90%" title={{title_list[8]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img10.png" width="90%" height="90%" title={{title_list[9]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img11.png" width="90%" height="90%" title={{title_list[10]}}>
-      </a>
-    </div>
+
   </div>
-  {% endif %}
+  {% endif %} -->
 
 </body>
 
