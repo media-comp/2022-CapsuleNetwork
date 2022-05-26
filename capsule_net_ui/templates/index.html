@@ -63,13 +63,47 @@
   {% endif %}
   <br>
   {% if generated %}
-  <input onchange='setImage(this)' type="range" min={{lb}} max={{ub}} value={{lb}} step={{interval}} style="width:40%" />
-<br>
 
+
+  <input id="bar" onchange='setImage(this)' onchange='outputUpdate(this)' type="range" min={{lb}} max={{ub}} value={{lb}} step={{interval}} style="width:40%"/>
+  <output for="bar" id="range">0</output>
+<br>
+<br>
 <!-- <meta id="my-data" data-lb={{lb}} data-interval="{{interval}}"> -->
 
+<div class="row">
   <div class="col-md-4">
-    <img id='img' src='static/img0.png' />
+    <img id="img" src="static/img1.png"/>
+  </div>
+
+  <div class="col-md-3">
+    <table class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Input</th>
+          <th scope="col">Value</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Digit</th>
+          <td>{{digit}}</td>
+
+        </tr>
+        <tr>
+          <th scope="row">Dimension</th>
+          <td>{{dim}}</td>
+        
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div class="col-md-3">
+      <img id="img_ori" src='static/img0.png' />
+    </div>
+  
   </div>
 
   <script>
@@ -80,52 +114,21 @@
   {
     let lb = {{ lb | safe }}
     let interval = {{ interval | safe }}
-    let value = Number(((obj.value - lb) / interval));
+    let value = Math.round(Number(((obj.value - lb) / interval))) + 1;
     val_str = value.toString();
     let s1 = 'static/img';
     let s2 = s1.concat(val_str, ".png");
     img.src = s2;
+    let display = Number(obj.value).toFixed(2);
+    document.getElementById('range').innerHTML = display;
   }
+
   </script>
 
 
+</div>
 
   {% endif %}
-
-
-  <!-- {% if generated %}
-  <div class="row">
-
-    <div class="col-md-1 offset-md-2 col-lg-1 offset-lg-2 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img0.png" width="90%" height="90%" title="Original">
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img1.png" width="90%" height="90%" title={{title_list[0]}}>
-      </a>
-    </div>
- 
-  </div>
-
-  <br>
-
-  <div class="row">
-
-    <div class="col-md-1 offset-md-2 col-lg-1 offset-lg-2 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img6.png" width="90%" height="90%" title={{title_list[5]}}>
-      </a>
-    </div>
-    <div class="col-md-1 col-lg-1 thumb">
-      <a class="thumbnail" href="#">
-        <img class="rounded img-responsive" src="static/img7.png" width="90%" height="90%" title={{title_list[6]}}>
-      </a>
-    </div>
-
-  </div>
-  {% endif %} -->
 
 </body>
 

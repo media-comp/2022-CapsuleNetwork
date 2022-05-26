@@ -2,3 +2,27 @@
     width:45%;
     margin-left: 9% !important;
  }
+
+ #bar {
+    margin-left: 20% !important;
+ }
+
+ #img {
+    width: 80%;
+    height: 80%;
+    margin-left: 45% !important;
+ }
+
+ table {
+    margin-left: 40%;
+ }
+
+ #img_ori {
+    width: 200%;
+    height: 200%;
+    margin-left: 190%;
+ }
+
+ #range {
+     color:white;
+ }

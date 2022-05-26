@@ -14,21 +14,24 @@ def normalize():
     return img_norm
 
 
-def find_visuals(dataset: tf.data.Dataset, model: tf.keras.Model, digit, dim, lb, ub, intervals):
+
+
+def find_visuals(model: tf.keras.Model, digit, dim, lb, ub, intervals):
     img_norm = normalize()
     visuals = []
-    for x, y in dataset.shuffle(1024).batch(1):
+    _, test_set = tfds.load('mnist', split=['train', 'test'], shuffle_files=True, as_supervised=True)
+
+    for x, y in test_set.shuffle(1024).batch(1):
         if y.numpy()[0] == digit:
             class_vector = (model(img_norm(x))[0]).numpy()[0]
             if np.argmax(np.linalg.norm(class_vector, axis=-1)) == digit:
-                visuals.append(x.numpy()[0][..., 0])
+                #   visuals.append(x.numpy()[0][..., 0])
 
                 fig, ax = plt.subplots(1, figsize=(9, 9))
-                ax.plot(img, cmap="gray")
+                ax.imshow(x.numpy()[0][..., 0], cmap="gray")
                 ax.axis("off")
                 file_name = f"static/img0.png"
                 plt.savefig(file_name, bbox_inches="tight")
-                plt.close()
 
                 original_value = class_vector[digit, dim]
                 lower = lb
@@ -40,13 +43,12 @@ def find_visuals(dataset: tf.data.Dataset, model: tf.keras.Model, digit, dim, lb
                     img = model.reconstruct(np.expand_dims(tweaked_vector, 0)).numpy()[0][..., 0]
 
                     fig, ax = plt.subplots(1, figsize=(9, 9))
-                    ax.plot(img, cmap="gray")
+                    ax.imshow(img, cmap="gray")
                     ax.axis("off")
                     index = i + 1
                     file_name = f"static/img{index}.png"
                     plt.savefig(file_name, bbox_inches="tight")
-                    plt.close()
-
+                break
     return original_value + lower, original_value + upper, interval
 
 

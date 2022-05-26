@@ -24,12 +24,8 @@ def predict():
 
         # save images to `static` folder and return values for displaying.
         lower, upper, interval = find_visuals(model, digit, dim, low_bound, up_bound, intervals)
-        # generate `title_list` will display value when the mouse hover the image
-        # interval = (upper - lower) / 10
-        # value_list = [round(lower + interval * i, 2) for i in range(11)]
-        # value_list = list(map(lambda x: str(x), value_list))
 
-        return render_template("index.html", generated=True, lb=lower, ub=upper, interval=interval)
+        return render_template("index.html", generated=True, lb=lower, ub=upper, interval=interval, digit=digit, dim=dim)
     return render_template("index.html", generted=False)
 
 
