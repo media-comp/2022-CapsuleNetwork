@@ -75,7 +75,7 @@ python tweak_visualize.py --digit <digit> --dimension <dimension>
                         the upper difference bound for the target value, 0.25 by default
 ```
 
-You can also visualize the reconstruction through `capsule_net_ui`. Move to the `capsule_net_ui` folder and run the following command. Then open the prompt url in your browser.
+You can also visualize the reconstruction through `capsule_net_ui`. Move to the `capsule_net_ui` folder and run the following command. Then open the prompt url in your browser. However, a trained model is needed. The `app.py` will load `model` folder in the root directory. 
 
 ```
 python app.py
