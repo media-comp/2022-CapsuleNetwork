@@ -16,6 +16,8 @@ parser.add_argument('--save-model', type=bool, default=True, help='whether to sa
 parser.add_argument('--model-path', type=str, default='./model', help='path to save the trained model, ./model by default')
 parser.add_argument('--gpu', type=str, default='0', help='ids of the GPUs to run the program on, use : to indicate a slice, 0 by default')
 parser.add_argument('--testing', type=bool, default=False, help='for testing purposes, DO NOT use it')
+parser.add_argument('--datasets', type=str, default='kmnist', help='change to other kind of datasets')
+
 args = parser.parse_args()
 
 batch_size = args.batch_size
@@ -54,7 +56,7 @@ def normalize():
 
 
 if __name__ == '__main__':
-    train_set, valid_set, test_set = tfds.load('mnist', split=['train[:90%]', 'train[90%:]', 'test'], shuffle_files=True, as_supervised=True)
+    train_set, valid_set, test_set = tfds.load(args.datasets, split=['train[:90%]', 'train[90%:]', 'test'], shuffle_files=True, as_supervised=True)
     train_set = train_set.shuffle(1024, reshuffle_each_iteration=True).prefetch(1024)
     per_step = len(train_set) // 32 + 1
     img_aug = augmentation()
@@ -122,3 +124,9 @@ if __name__ == '__main__':
         loss = testing(x, y)
         losses.append(loss)
     print(f'Test set loss: {np.mean(losses):.4f}, accuracy: {float(test_metric.result()):.4f}\n')
+    
+losses=np.array(losses)
+plt.ylabel('losses')
+plt.xlabel('batch_num')
+plt.plot(losses)
+
