@@ -14,7 +14,8 @@ parser.add_argument('--lr-decay-rate', type=float, default=0.8, help='learning r
 parser.add_argument('--lr-decay-steps', type=int, default=10000, help='steps to take until the next decay, 10000 by default')
 parser.add_argument('--save-model', type=bool, default=True, help='whether to save the model or not, True by default')
 parser.add_argument('--model-path', type=str, default='./model', help='path to save the trained model, ./model by default')
-parser.add_argument('--gpu', type=str, default='0', help='ids of the GPUs to run the program on, use : to indicate the slice, 0 by default')
+parser.add_argument('--gpu', type=str, default='0', help='ids of the GPUs to run the program on, use : to indicate a slice, 0 by default')
+parser.add_argument('--testing', type=bool, default=False, help='for testing purposes, DO NOT use it')
 args = parser.parse_args()
 
 batch_size = args.batch_size
@@ -59,6 +60,12 @@ if __name__ == '__main__':
     img_aug = augmentation()
     img_norm = normalize()
     model = MNISTCapsNet()
+
+    if args.testing:
+        dummy_input = np.zeros((1, 28, 28, 1), dtype=float)
+        model(dummy_input, training=False)
+        exit()
+
 
     @tf.function
     def training(x, y):
