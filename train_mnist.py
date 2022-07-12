@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import numpy as np
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -39,6 +40,8 @@ def augmentation():
     operations.add(tf.keras.layers.Rescaling(1./255))
     operations.add(tf.keras.layers.ZeroPadding2D(2))
     operations.add(tf.keras.layers.RandomCrop(IMAGE_SIZE[0], IMAGE_SIZE[1]))
+    operations.add(tf.keras.layers.RandomZoom(0.2, 0.2))
+    operations.add(tf.keras.layers.RandomTranslation(0.2, 0.2))
 
     def img_aug(x: tf.Tensor):
         return operations(x)
@@ -97,6 +100,12 @@ if __name__ == '__main__':
     opt = tf.keras.optimizers.Adam(lr_scheduler)
     train_metric = tf.keras.metrics.SparseCategoricalAccuracy()
     valid_metric = tf.keras.metrics.SparseCategoricalAccuracy()
+    
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    train_log_dir = 'logs/gradient_tape/' + current_time + '/train'
+    test_log_dir = 'logs/gradient_tape/' + current_time + '/test'
+    train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+    test_summary_writer = tf.summary.create_file_writer(test_log_dir)
 
     for e in range(epochs):
         print(f'Epoch {e+1}/{epochs}')
@@ -104,12 +113,18 @@ if __name__ == '__main__':
 
         for x, y in train_set.batch(batch_size):
             loss = training(x, y)
+            with train_summary_writer.as_default():
+                tf.summary.scalar('training_loss', loss, step=e)
+                tf.summary.scalar('training_metric', train_metric.result(), step=e)
             pb.add(1, [('training_loss', float(loss)), ('training_metric', float(train_metric.result()))])
 
         losses = []
         for x, y in valid_set.batch(batch_size):
             loss = validation(x, y)
             losses.append(loss)
+        with train_summary_writer.as_default():
+            tf.summary.scalar('validation_loss', np.mean(losses), step=e)
+            tf.summary.scalar('validation_metric', valid_metric.result(), step=e)
         print(f'valid_loss: {np.mean(losses):.4f}, valid_metric: {float(valid_metric.result()):.4f}\n')
 
         train_metric.reset_state()
